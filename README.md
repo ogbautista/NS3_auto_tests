@@ -1,11 +1,14 @@
 # NS3_auto_tests
 ### About
 Python script to run several NS-3 simulations automatically and parse the result files to extract the required information.
+
 Simulations in NS-3 are run from the command line along with its parameter options:
 
 ./waf --run "testFile.cc [param1=value1] [param2=value2] ..."
 
-Simulation are especified:
+This python script assembles the above script for each ns-3 simulation based on the param/values espeficied inside the python script and then executes it on the command line. After the ns-3 simulation finishes, it generates Mesh Point report files and a Flow Monitor report file that are read by python, the required information is extracted and summarized in csv files.
+
+Simulation are especified inside the python script:
 1. As a list containing the different strings of param=value pairs for each simulation, or
 2. By especifying a dictionary with different values for each param, the python script then will combine all those parameter values and execute all simulations resulting from the combination of those parameter values.
 
