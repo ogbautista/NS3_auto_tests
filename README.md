@@ -19,4 +19,4 @@ Used to especify tests as dictionaries with values for each parameter. This is t
 skip
 
 Used to continue the execution of the batch tests after it was interrupted.
-skip=5, skip the first 5 tests and continue from test #6.
+skip=5, causes the script to skip the first 5 tests and continue from test #6.
