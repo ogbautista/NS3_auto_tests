@@ -1,17 +1,32 @@
-# DESCRIPTION: Utility program to run a number of NS-3 simulation tests continuously and parse different xml result file to read the data of interest
-# and export it to a csv files
-# AUTHOR: Oscar Bautista <obaut004@fiu.edu>
+'''
+DESCRIPTION: Utility program to run a number of NS-3 simulation tests continuously and parse xml result files to record the data of interest
+and summarize in csv files
+AUTHOR: Oscar Bautista <obaut004@fiu.edu>
+'''
+
+'''
+Next features:
+Add a command line option to redo specific tests that contain specific parameter values
+Future Fixes:
+Flows are numbered in the order the application starts (headings), but the stats are ordered in ascending flow number (content)
+'''
 
 import os, sys
 import xml.etree.ElementTree as ET
 import csv
 from copy import deepcopy
 
+'LIMITATIONS'
+'For all tests the number of nodes in the network should be the same and it requires to set in the "testPar" dictionary below'
+
 # By default execute tests at TEST_LIST instead of combination of parameters values specified at param_set
 # In other words, this program will run one or the other not both
 runList = True
 # If test was interrupted, this allows to continue from the point it was stopped by skipping completed tests
 skip = 0
+# test index options for report file names, used when replacing specific tests run in a previous batch
+test_iter_offset = 0
+test_iter_increment = 1
 # List of tests to run, arguments and values only, areguments don't need to be preceded by "--"
 TEST_LIST = [
             "--tx-power=2.0 --remote-station-manager=arf --wifi-standard=80211g --propagation-loss-model=friis --protocol=udp --airtime-b=true --root=00:00:00:00:00:10 --do-flag=true",
@@ -27,28 +42,27 @@ TEST_LIST = [
             "--tx-power=-5.0 --remote-station-manager=minstrelht --wifi-standard=80211n2.4 --propagation-loss-model=itur1411 --protocol=tcp --airtime-b=true --root=ff:ff:ff:ff:ff:ff --do-flag=false",
             "--tx-power=-4.0 --remote-station-manager=minstrelht --wifi-standard=80211n2.4 --propagation-loss-model=itur1411 --protocol=tcp --airtime-b=true --root=ff:ff:ff:ff:ff:ff --do-flag=false"
 ]
-
 param_set = [
             {
-            "wp-mobility" : ["true"],
-            "topology" : ["0"],
+            #"wp-mobility" : ["true"],
+            "topology" : [],
             "metric": ["srftime"],# "airtime", "airtime-b", "etx", "hop-count"], #"pckatime-srb1", "fdpow2", #srptime-efp2 #pckatime-srb1 is same srftime (renamed)
-            "propagation-loss-model" : ["itur1411NLos"],
-            "tx-power" : ["0", "1", "2", "3"],
+            "propagation-loss-model" : ["friis"],
+            "tx-power" : ["-1", "0"],
             "protocol" : ["udp", "tcp"],
             "data-rate" : ["5", "10", "20"],
             #"metric-distance-mode" : ["0",],
             #"leap-seconds": ["0",],
             },
-            # {
-            # "wp-mobility" : ["true"],
-            # "topology" : ["1"],
-            # "metric": ["srftime", "airtime", "airtime-b", "etx", "hop-count"], #"pckatime-srb1", "fdpow2", #srptime-efp2 #pckatime-srb1 is same srftime (renamed)
-            # "propagation-loss-model" : ["itur1411"],
-            # "tx-power" : ["-5", "-4"],
-            # "protocol" : ["udp", "tcp"],
-            # "data-rate" : ["5", "10", "20"],
-            # },
+            {
+            #"wp-mobility" : ["true"],
+            "topology" : [],
+            "metric": ["srftime"],
+            "propagation-loss-model" : ["itur1411"],
+            "tx-power" : ["-5", "-4"],
+            "protocol" : ["udp", "tcp"],
+            "data-rate" : ["5", "10", "20"],
+            },
             # {
             # "wp-mobility" : ["true"],
             # "topology" : ["1"],
@@ -68,16 +82,15 @@ param_set = [
             # }
 ]
 
-# for i in range (30):
-#     param_set[0]['topology'].append( str(i) )
-
+for i in range (30):
+    param_set[0]['topology'].append( str(i) )
+    param_set[1]['topology'].append( str(i) )
 
 destinationIP = "10.1.1.1"  # Ip Address for sink node for which statistics is to be collected
 testFileName = "mymesh"     # ns3-test filename
 flowMonReportFile = 'MyMeshPerformance.xml' # Flow monitor report file name
 mpReportBaseName = 'mp-report-'
-
-dataReportFilename = 'testSummary-60Nodes-0-oscarlaptop-wpMobil-srftime-itur1411NLos.csv' #2NewStaticMetrics, srptime-efp2
+dataReportFilename = 'testSummary-60Nodes-oscarlaptop-srftime-friis-itur1411.csv' #2NewStaticMetrics, srptime-efp2
 mpSummaryReportBaseName = 'net-mp-report-'
 
 physicalPar = {
@@ -95,7 +108,6 @@ physicalPar = {
             "MaxSupportedRxSpatialStreams": 1,
             "ShortGuardEnabled": False,
 }
-
 networkPar = {
             "start": 0.2,
             "MaxBeaconLoss": 10,
@@ -113,7 +125,6 @@ networkPar = {
             "metric": "airtime",
             "beacon-window": 30,
 }
-
 testPar = {
             "x-size": 3,
             "y-size": 3,
@@ -129,9 +140,8 @@ testPar = {
             "channels": True,
             "protocol": "udp",
             "propagation-loss-model": "friis",
-            "wp-mobility": True,
+            "wp-mobility": False,
 }
-
 nNodes = int( testPar['nodes'] )    # Number of nodes in the topology to be used for processing of mp report
 
 def onehex2dec (letter):
@@ -234,10 +244,10 @@ else:
                             value_csv.append(value5)
                             for value6 in dict[ param_list[5] ]:
                                 value_csv.append(value6)
-                                for value7 in dict[ param_list[6] ]:
-                                    value_csv.append(value7)
-                                    value_csv_list.append(value_csv)
-                                    value_csv = value_csv [:-1]
+                                #for value7 in dict[ param_list[6] ]:
+                                    #value_csv.append(value7)
+                                value_csv_list.append(value_csv)
+                                    #value_csv = value_csv [:-1]
                                 value_csv = value_csv [:-1]
                             value_csv = value_csv [:-1]
                         value_csv = value_csv [:-1]
@@ -268,7 +278,7 @@ else:
 if (headingsOrdered):
     maxColumnSize = len (param_csv_list)
 
-offsetRow = []
+offsetRow = [] #Creates a column offset before the headings identifying flows
 for i in range(maxColumnSize):
     offsetRow.append("")
 if skip == 0:
@@ -314,6 +324,7 @@ if skip == 0:
             filewriter.writerow (row)
         filewriter.writerow ([" "])
 
+'THE SCRIPT EXECUTION STARTS HERE'
 #Run parsed scripts and update csv file
 testIter = 0
 
@@ -322,9 +333,8 @@ for script in parsed_test_list:
     # If this is a continuted execution of a previous stopped list of tests, skip tests completed
     if testIter <= skip:
         continue
-
     # Build a filename for ascii report file and net-mp csv report file:
-    testTxt = str(testIter)
+    testTxt = str(test_iter_offset + test_iter_increment*(testIter-1) +1)
     testTxt = "0"*(3-len(testTxt)) + testTxt
     #testTxtAscii = "meshtest-" + testTxt + ".tr"
 
@@ -354,13 +364,18 @@ for script in parsed_test_list:
                 else:
                     row = offsetRow
                 for flow in flowIds:
-                    row.append("Flow " + flow)
+                    row.append("TP Flow " + flow)
                 row.append("TotRxPackets")
                 row.append("TotRxDataBytes")
+                for flow in flowIds:
+                    row.append("SumD Flow " + flow)
+                row.append("TotDelaySum")
+                row.append("Avg Delay")
                 filewriter.writerow(row)
 
             #Obtaining statistics from flows identified
             statRow = []
+            statRowDelay = []
             flowIter = 0
             totalRxDataBytes = 0
             for flow in root.findall('FlowStats/Flow'):
@@ -368,14 +383,24 @@ for script in parsed_test_list:
                     rxPackets = int(flow.attrib['rxPackets'])
             # Need to change this, flows are numbered in the order the application starts (headings), but the stats are ordered in ascending flow number (content)
                     statRow.append(rxPackets)
+                    delaySumTxt = flow.attrib['delaySum']
+                    delaySum = float(delaySumTxt[1:-2])/1000 # Store the value in microseconds
+                    statRowDelay.append(delaySum)
                     overhead = 28 if flowProtocols[flowIter] == "17" else 52 if flowProtocols[flowIter] == "6" else 0
                     totalRxDataBytes += int(flow.attrib['rxBytes']) - overhead*rxPackets
-            statRow.append(sum(statRow))
+            totalRxPackets = sum(statRow)
+            statRow.append(totalRxPackets)
             statRow.append(totalRxDataBytes)
+            statRow.extend(statRowDelay)
+            statRow.append(sum(statRowDelay))
+            statRow.append(sum(statRowDelay)/totalRxPackets)
             if (headingsOrdered):
                 row = value_csv_list[testIter-1] + statRow
             else:
-                row = param_value_csv_list[testIter-1] + statRow
+                row = param_value_csv_list[testIter-1]
+                for i in range(maxColumnSize - len(param_value_csv_list[testIter-1])):
+                    row.append("")
+                row.extend(statRow)
             filewriter.writerow(row)
             print("\n" + dataReportFilename + " file has been updated.")
 
@@ -383,7 +408,8 @@ for script in parsed_test_list:
             mpSummaryReportFilename = mpSummaryReportBaseName + testTxt + '.csv'
             with open(mpSummaryReportFilename, 'a', newline='') as mpSummaryCsv:
                 mpSummaryWriter = csv.writer(mpSummaryCsv, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                mpSummaryWriter.writerow(["node", "root", "txUnicast", "txBroadcast", "txBytes", "droppedTtl", "totalQueued", "totalDropped", "initiatedPreq", "initiatedPrep",
+                mpSummaryWriter.writerow(["node", "root", "TxUnicastData", "txUnicastDataBytes", "rxUnicastData", "rxUnicastDataBytes", "fwdUnicastData", "fwdUnicastDataBytes",
+                                        "txUnicast", "txBroadcast", "txBytes", "droppedTtl", "totalQueued", "totalDropped", "initiatedPreq", "initiatedPrep",
                                         "initiatedPerr", "initiatedLpp", "txPreq", "txPrep", "txPerr", "txLpp", "rxPreq", "rxPrep", "rxPerr", "rxLpp", "txMgt", "txMgtBytes",
                                         "rxMgt", "rxMgtBytes", "txData", "txDataBytes", "rxData", "rxDataBytes", "txOpen", "txConfirm", "txClose", "rxOpen", "rxConfirm",
                                         "rxClose", "dropped", "brokenMgt", "txMgt", "txMgtBytes", "rxMgt", "rxMgtBytes", "beaconShift", "linksOpened", "linksClosed",
@@ -400,6 +426,14 @@ for script in parsed_test_list:
                         row.append("yes")
                     else:
                         row.append("no")
+                    # General Statistics
+                    for stats in root.findall('Statistics'):
+                        row.append(stats.attrib['txUnicastData'])
+                        row.append(stats.attrib['txUnicastDataBytes'])
+                        row.append(stats.attrib['rxUnicastData'])
+                        row.append(stats.attrib['rxUnicastDataBytes'])
+                        row.append(stats.attrib['fwdUnicastData'])
+                        row.append(stats.attrib['fwdUnicastDataBytes'])
                     # hwmp statistics
                     for hwmpStats in root.findall('Hwmp/Statistics'):
                         row.append(hwmpStats.attrib['txUnicast'])
@@ -459,7 +493,6 @@ for script in parsed_test_list:
                     # add node report information to csv file
                     mpSummaryWriter.writerow(row)
                 print(mpSummaryReportFilename + " file has been created.\n")
-
         else:
             if (headingsOrdered):
                 row = value_csv_list[testIter-1]
