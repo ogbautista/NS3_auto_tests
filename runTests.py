@@ -81,7 +81,6 @@ param_set = [
             # "tx-power" : ["0"]
             # }
 ]
-
 for i in range (30):
     param_set[0]['topology'].append( str(i) )
     param_set[1]['topology'].append( str(i) )
@@ -393,7 +392,10 @@ for script in parsed_test_list:
             statRow.append(totalRxDataBytes)
             statRow.extend(statRowDelay)
             statRow.append(sum(statRowDelay))
-            statRow.append(sum(statRowDelay)/totalRxPackets)
+            if totalRxPackets != 0:
+                statRow.append(sum(statRowDelay)/totalRxPackets)
+            else:
+                statRow.append("")
             if (headingsOrdered):
                 row = value_csv_list[testIter-1] + statRow
             else:
