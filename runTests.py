@@ -1,9 +1,16 @@
 '''
-DESCRIPTION: Utility program to run a number of NS-3 simulation tests continuously and parse xml result files to record the data of interest
-and summarize in csv files
-AUTHOR: Oscar Bautista <obaut004@fiu.edu>
+* Copyright (c) 2019 - 2020 Oscar Bautista
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License version 2 as published
+* by the Free Software Foundation.
+*
+* DESCRIPTION:
+* Utility program to run a number of NS-3 simulation tests continuously and parse xml result files to record
+* the data of interestand summarize in csv files.
+*
+* AUTHOR: Oscar Bautista <obaut004@fiu.edu>
 '''
-
 '''
 Next features:
 Add a command line option to redo specific tests that contain specific parameter values
@@ -17,14 +24,14 @@ import csv
 from copy import deepcopy
 
 'LIMITATIONS'
-'For all tests the number of nodes in the network should be the same and it requires to set in the "testPar" dictionary below'
+'For all the simulation tests the number of nodes in the network should be the same, and it requires to be set in the "testPar" dictionary below'
 
 # By default execute tests at TEST_LIST instead of combination of parameters values specified at param_set
 # In other words, this program will run one or the other not both
 runList = True
 # If test was interrupted, this allows to continue from the point it was stopped by skipping completed tests
 skip = 0
-# test index options for report file names, used when replacing specific tests run in a previous batch
+# test index options for report file names, used when replacing specific simulation tests run in a previous batch
 test_iter_offset = 0
 test_iter_increment = 1
 # List of tests to run, arguments and values only, areguments don't need to be preceded by "--"
@@ -414,8 +421,8 @@ for script in parsed_test_list:
                                         "txUnicast", "txBroadcast", "txBytes", "droppedTtl", "totalQueued", "totalDropped", "initiatedPreq", "initiatedPrep",
                                         "initiatedPerr", "initiatedLpp", "txPreq", "txPrep", "txPerr", "txLpp", "rxPreq", "rxPrep", "rxPerr", "rxLpp", "txMgt", "txMgtBytes",
                                         "rxMgt", "rxMgtBytes", "txData", "txDataBytes", "rxData", "rxDataBytes", "txOpen", "txConfirm", "txClose", "rxOpen", "rxConfirm",
-                                        "rxClose", "dropped", "brokenMgt", "txMgt", "txMgtBytes", "rxMgt", "rxMgtBytes", "beaconShift", "linksOpened", "linksClosed",
-                                        "linksTotal", "links"])
+                                        "rxClose", "dropped", "brokenMgt", "txMgt", "txMgtBytes", "rxMgt", "rxMgtBytes", "beaconShift", "rootNextHop", "rootMetric", "linksOpened",
+                                        "linksClosed", "linksTotal")
                 for n in range (nNodes):
                     row = []
                     row.append( str(n) )
@@ -424,8 +431,10 @@ for script in parsed_test_list:
                     root = tree.getroot()
                     # is root?
                     hwmp = root.findall('Hwmp')
+                    isRoot = False
                     if hwmp[0].attrib['isRoot'] == "1":
                         row.append("yes")
+                        isRoot = True
                     else:
                         row.append("no")
                     # General Statistics
@@ -481,6 +490,10 @@ for script in parsed_test_list:
                         row.append(peerProtocolMacStats.attrib['rxMgt'])
                         row.append(peerProtocolMacStats.attrib['rxMgtBytes'])
                         row.append(peerProtocolMacStats.attrib['beaconShift'])
+                    # Route to Root Node
+                        pRoute = root.find('Hwmp/RoutingTable/ProactiveRoute')
+                        row.append(pRoute.get('retransmitter') if not isRoot else "N/A")
+                        row.append(pRoute.get('metric') if not isRoot else "0")
                     # peer management protocol statistics
                     for peerProtocolStats in root.findall('PeerManagementProtocol/Statistics'):
                         row.append(peerProtocolStats.attrib['linksOpened'])
