@@ -15,7 +15,8 @@
 import sys, re, csv
 
 '''
-Reads an XML File, whose name is passed as an argument from the command line at position 'index'. If no filename is given, it is prompted for input from the user.
+Reads an XML File, whose name is passed as an argument from the command line at position 'index'. If no filename is given,
+it is prompted for input from the user.
 RETURNS the filename and the xml root.'''
 def tree_xmlfile_prompt (index):
     filename = None
@@ -38,8 +39,8 @@ def tree_xmlfile_prompt (index):
     return filename, tree.getroot()
 
 '''
-Reads a file with specific format containing 3d coordinates, whose name is passed as an argument from the command line at position 'index' or as an argument to the function.
-If no filename is given, it is prompted for input from the user.
+Reads a file with specific format containing 3d coordinates, whose name is passed as an argument from the command line at
+position 'index' or as an argument to the function. If no filename is given, it is prompted for input from the user.
 RETURNS the topology number and 3 lists corresponding to the values of each coordinate's dimension.'''
 def get_coordinates_prompt (index = None, filenameRef = [None], topoId = None):
     filename = filenameRef[0]
@@ -109,8 +110,9 @@ def get_coordinates_prompt (index = None, filenameRef = [None], topoId = None):
     return topoId, X, Y, Z
 
 '''
-Reads a CSV file with specific format containing summary report for a specific network simulation. The filename is passed as an argument from the command line
-at position 'index' or as an argument to the function. If no filename is given, it is prompted for input from the user.
+Reads a CSV file with specific format containing summary report for a specific network simulation. The filename is passed
+as an argument from the command line at position 'index' or as an argument to the function. If no filename is given, it is
+prompted for input from the user.
 RETURNS a generator object which produces Node Records as an OrderedDict.'''
 def get_csvdict_prompt (index = None, filenameRef = [None]):
     filename = filenameRef[0]
@@ -131,6 +133,6 @@ def get_csvdict_prompt (index = None, filenameRef = [None]):
                     yield row
             break
         except:
-            print ("there was an error during the process of getting information from the specified file\n")
+            print ("there was an error during the process of getting information from the specified net-mp csv file\n")
             filename = None
     print ("done")
