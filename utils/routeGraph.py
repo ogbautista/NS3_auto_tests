@@ -42,6 +42,9 @@ class RouteGraph:
         print("Building figure...")
         # figaspect set the relation height/width, the multiplier scales the whole figure
         fig = plt.figure(figsize = plt.figaspect(0.5)*1.3)
+            # *** Alternative, grid modification does not work ***
+            # fig, ax = plt.subplots(figsize = plt.figaspect(0.5)*1.3)
+            # ax.grid(linestyle='-', linewidth='0.5', color='red')
         # Set title for the Figure
         if fTitle is None:
             if dimension == '3d':
@@ -78,9 +81,13 @@ class RouteGraph:
 
     def plot_node (self, X, Y, Z= 0, nodeRank=NodeRank.TRANSMITTING):
         if nodeRank == NodeRank.ROOT:
-            self._axes.scatter(X, Y, Z, s=40, c='r', marker='*')
+            self._axes.scatter(X, Y, Z, s=50, c='xkcd:light gray', marker = 'o', linewidths=0.7, edgecolor='b')
+            self._axes.scatter(X, Y, Z, s=25, c='r', marker='*')
         elif nodeRank == NodeRank.NOROOTPATH:
             self._axes.scatter(X, Y, Z, s=10, c='xkcd:dark gray', marker='o')
+        elif nodeRank == NodeRank.SILENT:
+            self._axes.scatter(X, Y, Z, s=20, c='k', marker='o')
+            self._axes.scatter(X, Y, Z, s=12, c='r', marker='2')
         elif nodeRank == NodeRank.TRANSMITTING:
             self._axes.scatter(X, Y, Z, s=12, c='b', marker='o')
 
@@ -99,12 +106,15 @@ class RouteGraph:
             self.plot_node (X[sn], Y[sn], Z[sn], NodeRank.NOROOTPATH)
             if linkType == LinkType.COMPREHENSIVE:
                 showPeerLink = True
+        elif nodeInfo['TxUnicastData'] == '0':
+            self.plot_node (X[sn], Y[sn], Z[sn], NodeRank.SILENT)
+            rootdn = int(netSimUtils.macAddr2node(nodeInfo['rootNextHop']))
         else:
             self.plot_node (X[sn], Y[sn], Z[sn], NodeRank.TRANSMITTING)
             rootdn = int(netSimUtils.macAddr2node(nodeInfo['rootNextHop']))
         # print node label
         if labels:
-            self._axes.text(X[sn], Y[sn], Z[sn], '%s' % (str(sn)), size=8, zorder=1, color='k')
+            self._axes.text(X[sn]+5, Y[sn]+5, Z[sn], '%s' % (str(sn)), size=8, zorder=1, color='k')
         # key 'links' exist only when there is at least one peer link
         if linkType != LinkType.NONE and 'links' in nodeInfo.keys():
             for link in nodeInfo['links']:
