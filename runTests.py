@@ -422,7 +422,7 @@ for script in parsed_test_list:
                                         "initiatedPerr", "initiatedLpp", "txPreq", "txPrep", "txPerr", "txLpp", "rxPreq", "rxPrep", "rxPerr", "rxLpp", "txMgt", "txMgtBytes",
                                         "rxMgt", "rxMgtBytes", "txData", "txDataBytes", "rxData", "rxDataBytes", "txOpen", "txConfirm", "txClose", "rxOpen", "rxConfirm",
                                         "rxClose", "dropped", "brokenMgt", "txMgt", "txMgtBytes", "rxMgt", "rxMgtBytes", "beaconShift", "rootNextHop", "rootMetric", "linksOpened",
-                                        "linksClosed", "linksTotal")
+                                        "linksClosed", "linksTotal"])
                 for n in range (nNodes):
                     row = []
                     row.append( str(n) )
