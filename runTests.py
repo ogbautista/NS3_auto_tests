@@ -22,6 +22,7 @@ import os, sys
 import xml.etree.ElementTree as ET
 import csv
 from copy import deepcopy
+from utils.reportHelperFunctions import genRChangeHistogram
 
 'LIMITATIONS'
 'For all the simulation tests the number of nodes in the network should be the same, and it requires to be set in the "testPar" dictionary below'
@@ -93,11 +94,15 @@ for i in range (30):
     param_set[1]['topology'].append( str(i) )
 
 destinationIP = "10.1.1.1"  # Ip Address for sink node for which statistics is to be collected
+destinationMAC = "00:00:00:00:00:01" # MAC address of sink node (Typically the root node)
 testFileName = "mymesh"     # ns3-test filename
 flowMonReportFile = 'MyMeshPerformance.xml' # Flow monitor report file name
 mpReportBaseName = 'mp-report-'
 dataReportFilename = 'testSummary-60Nodes-oscarlaptop-srftime-friis-itur1411.csv' #2NewStaticMetrics, srptime-efp2
 mpSummaryReportBaseName = 'net-mp-report-'
+logRouteChanges = True
+rChangesReportFilename = 'rChanges.csv'
+rChangeHstgBaseName = 'rChangeHistogram-'
 
 physicalPar = {
             "EnergyDetectionThreshold": -87.0,
@@ -340,8 +345,7 @@ for script in parsed_test_list:
     if testIter <= skip:
         continue
     # Build a filename for ascii report file and net-mp csv report file:
-    testTxt = str(test_iter_offset + test_iter_increment*(testIter-1) +1)
-    testTxt = "0"*(3-len(testTxt)) + testTxt
+    testTxt = "{0:03d}".format(test_iter_offset + test_iter_increment*(testIter-1) +1)
     #testTxtAscii = "meshtest-" + testTxt + ".tr"
 
     #Specify the ascii report filename as an argument to the test:
@@ -370,13 +374,16 @@ for script in parsed_test_list:
                 else:
                     row = offsetRow
                 for flow in flowIds:
-                    row.append("TP Flow " + flow)
+                    row.append("TP_Flow_" + flow)
                 row.append("TotRxPackets")
                 row.append("TotRxDataBytes")
                 for flow in flowIds:
-                    row.append("SumD Flow " + flow)
-                row.append("TotDelaySum")
-                row.append("Avg Delay")
+                    # Cumulative delay
+                    row.append("CD_Flow_" + flow)
+                row.append("TotDelaySum_us")
+                row.append("AvgDelay_us")
+                if logRouteChanges:
+                    row.append("RouteChanges")
                 filewriter.writerow(row)
 
             #Obtaining statistics from flows identified
@@ -390,7 +397,7 @@ for script in parsed_test_list:
             # Need to change this, flows are numbered in the order the application starts (headings), but the stats are ordered in ascending flow number (content)
                     statRow.append(rxPackets)
                     delaySumTxt = flow.attrib['delaySum']
-                    delaySum = float(delaySumTxt[1:-2])/1000 # Store the value in microseconds
+                    delaySum = float(delaySumTxt[:-2])/1000 # Store the value in microseconds
                     statRowDelay.append(delaySum)
                     overhead = 28 if flowProtocols[flowIter] == "17" else 52 if flowProtocols[flowIter] == "6" else 0
                     totalRxDataBytes += int(flow.attrib['rxBytes']) - overhead*rxPackets
@@ -403,6 +410,11 @@ for script in parsed_test_list:
                 statRow.append(sum(statRowDelay)/totalRxPackets)
             else:
                 statRow.append("")
+            if logRouteChanges:
+                rChangeHstgFilename = rChangeHstgBaseName + testTxt + '.csv'
+                rChanges = genRChangeHistogram (rChangeHstgFilename, rChangesReportFilename, nNodes, destinationMAC)
+                statRow.append(rChanges)
+            # Join parameters and stats row
             if (headingsOrdered):
                 row = value_csv_list[testIter-1] + statRow
             else:

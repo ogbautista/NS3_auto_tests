@@ -136,3 +136,19 @@ def get_csvdict_prompt (index = None, filenameRef = [None]):
             print ("there was an error during the process of getting information from the specified net-mp csv file\n")
             filename = None
     print ("done")
+
+'''
+Reads a CSV file with headers row. The filename is passed as an argument.
+RETURNS a generator object which produces Records as an OrderedDict with header elements as keys.'''
+def get_csvdict (filename, restKey = None):
+    while True:
+        try:
+            #print ("Opening and reading file", filename + "...", end = "")
+            with open (filename, 'r', newline='') as csvfile:
+                reader = csv.DictReader(csvfile, restkey = restKey)
+                for row in reader:
+                    yield row
+            break
+        except:
+            print ("there was an error during the process of getting information from the specified csv file\n")
+    #print ("done")
