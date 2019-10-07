@@ -21,7 +21,11 @@ def genRChangeHistogram (dstFilename, srcFilename, nNodes, dstMac, binWidth = 20
     rChangeCountList = [ 0 for i in range(nNodes) ]
 
     dictReport = fRead.get_csvdict (srcFilename)
-    record = next (dictReport)
+    try:
+        record = next (dictReport)
+    except:
+        print("No routes found, skipping generation of histogram file")
+        return 0
     # Determine units of time and set convFactor variable
     timeStr = record['Time']
     timeUnit = timeStr[-2:]
