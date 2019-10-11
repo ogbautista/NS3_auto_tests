@@ -22,7 +22,7 @@ import os, sys
 import xml.etree.ElementTree as ET
 import csv
 from copy import deepcopy
-from utils.reportHelperFunctions import genRChangeHistogram
+from my_utils.reportHelperFunctions import genRChangeHistogram
 
 'LIMITATIONS'
 'For all the simulation tests the number of nodes in the network should be the same, and it requires to be set in the "testPar" dictionary below'

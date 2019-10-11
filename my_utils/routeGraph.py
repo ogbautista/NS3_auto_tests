@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 from enum import Enum
-from utils import netSimUtils
+from my_utils import netSimUtils
 
 class NodeRank (Enum):
     ROOT = 1

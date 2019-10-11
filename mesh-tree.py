@@ -12,8 +12,8 @@
 * AUTHOR: Oscar Bautista <obaut004@fiu.edu>
 '''
 
-from utils import fRead
-from utils.routeGraph import RouteGraph, NodeRank, LinkType
+from my_utils import fRead
+from my_utils.routeGraph import RouteGraph, NodeRank, LinkType
 
 '''MAIN FUNCTION'''
 parameters = {

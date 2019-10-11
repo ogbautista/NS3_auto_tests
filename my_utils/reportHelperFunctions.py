@@ -9,7 +9,7 @@
 '''
 
 import csv
-from utils import fRead
+from my_utils import fRead
 
 def genRChangeHistogram (dstFilename, srcFilename, nNodes, dstMac, binWidth = 200):
     # Initialization of local variables
