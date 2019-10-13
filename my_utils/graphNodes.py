@@ -49,7 +49,7 @@ while executeMain:
             if not found:
                 indexMatch = topoIndex.findall(line)
                 if len (indexMatch) > 0:
-                    print("Topology found, reading coordinates...", end="")
+                    print("Topology found, reading coordinates...", end='')
                     found = True
             else:
                 coordinates = numVal.findall(line)
@@ -67,7 +67,7 @@ while executeMain:
             print("Building figure...")
             # Aspect ratio width vs height: 0.3, figure scaling: 0.5
             fig = plt.figure(figsize = plt.figaspect(0.3)*.5)
-            fig.canvas.set_window_title('Drone Distribution')
+            fig.canvas.set_window_title('Drone Deployment')
             #ax = fig.add_subplot (111, projection='3d')
             ax = fig.gca(projection='3d')
             ax.title.set_text( str(nNodes) + "-node topology #" + str(topoIdNum) )
