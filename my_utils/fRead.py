@@ -139,7 +139,7 @@ def get_csvdict_prompt (index = None, filenameRef = [None]):
 
 '''
 Reads a CSV file with headers row. The filename is passed as an argument.
-RETURNS a generator object which produces Records as an OrderedDict with header elements as keys.'''
+RETURNS a generator object which produces Records as an OrderedDict with header row elements as keys.'''
 def get_csvdict (filename, restKey = None):
     while True:
         try:
@@ -182,8 +182,32 @@ def read_bmScenario (filename):
                 locations.append(nodeLocations)
                 line = scenario.readline()
     except FileNotFoundError:
-        print(sys.exc_info()[1], '\n')
-        #print("The program rror opening {}: {}".format(filename, sys.exc_info()[1]))
+        print(sys.exc_info()[1])
     except:
         print("There was an error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
     return times, locations
+
+'''
+Reads a .param file from BonnMotion mobility scenario generator and returns a dict with a specific selection of parameters
+'''
+def read_bmParams(filename):
+    returnDict = {}
+    try:
+        with open (filename, 'r') as params:
+            lines = params.readlines()
+            for line in lines:
+                elements = line.split('=')
+                if (len(elements) > 1):
+                    key = elements[0]
+                    value = elements[1].strip()
+                    if key == 'model':
+                        returnDict[key]= value
+                    if key in ['x', 'y', 'z']:
+                        returnDict[key] = float(value)
+                    if key == 'J':
+                        returnDict[key] = value
+    except FileNotFoundError:
+        print(sys.exc_info()[1])
+    except:
+        print("There was an error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
+    return returnDict
