@@ -14,7 +14,7 @@ while True:
         if filename == "":
             quit()
     try:
-        print ("Opening file", filename + "...", end = "")
+        print ("Opening file", filename + "...", end='')
         f = open (filename, "r")
         print ("done")
         break
