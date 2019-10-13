@@ -19,7 +19,7 @@ while True:
         print ("done")
         break
     except:
-        print ("There was an error opening the specified file\n")
+        print ("there was an error opening the specified file\n")
         filename = None
 
 content = f.readlines()
@@ -66,13 +66,13 @@ while executeMain:
         if found:
             print("Building figure...")
             # Aspect ratio width vs height: 0.3, figure scaling: 0.5
-            fig = plt.figure(figsize = plt.figaspect(0.3)*.5)
+            fig = plt.figure(figsize = plt.figaspect(0.35)*.65)
             fig.canvas.set_window_title('Drone Deployment')
             #ax = fig.add_subplot (111, projection='3d')
             ax = fig.gca(projection='3d')
             ax.title.set_text( str(nNodes) + "-node topology #" + str(topoIdNum) )
-            ax.scatter(X[0], Y[0], Z[0], c='r', marker='o')
-            ax.scatter(X[1:], Y[1:], Z[1:], c='b', marker='o')
+            ax.scatter(X[0], Y[0], Z[0], s=15, c='r', marker='o')
+            ax.scatter(X[1:], Y[1:], Z[1:], s=15, c='b', marker='o')
             ax.set_xlabel('x axis')
             ax.set_ylabel('y axis')
             ax.set_zlabel('z axis')

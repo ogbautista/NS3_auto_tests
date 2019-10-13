@@ -33,8 +33,10 @@ def tree_xmlfile_prompt (index):
             tree = ET.parse(filename)
             print ("done")
             break
+        except FileNotFoundError:
+            print(sys.exc_info()[1], '\n')
         except:
-            print ("there was an error opening/parsing the specified file\n")
+            print ("Error while parsing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]),'\n')
             filename = None
     return filename, tree.getroot()
 
@@ -58,8 +60,8 @@ def get_coordinates_prompt (index = None, filenameRef = [None], topoId = None):
             print ("done")
             filenameRef[0] = filename
             break
-        except:
-            print ("there was an error opening the specified file\n")
+        except FileNotFoundError:
+            print(sys.exc_info()[1], '\n')
             filename = None
     content = f.readlines()
     f.close()
@@ -132,8 +134,10 @@ def get_csvdict_prompt (index = None, filenameRef = [None]):
                 for row in reader:
                     yield row
             break
+        except FileNotFoundError:
+            print(sys.exc_info()[1], '\n')
         except:
-            print ("there was an error during the process of getting information from the specified net-mp csv file\n")
+            print ("Error while processing record from {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]), '\n')
             filename = None
     print ("done")
 
@@ -149,8 +153,10 @@ def get_csvdict (filename, restKey = None):
                 for row in reader:
                     yield row
             break
+        except FileNotFoundError:
+            print(sys.exc_info()[1], '\n')
         except:
-            print ("there was an error during the process of getting information from the specified csv file\n")
+            print ("Error while processing record from {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]), '\n')
     #print ("done")
 
 '''
@@ -184,7 +190,7 @@ def read_bmScenario (filename):
     except FileNotFoundError:
         print(sys.exc_info()[1])
     except:
-        print("There was an error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
+        print("Error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
     return times, locations
 
 '''
@@ -209,5 +215,5 @@ def read_bmParams(filename):
     except FileNotFoundError:
         print(sys.exc_info()[1])
     except:
-        print("There was an error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
+        print("Error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
     return returnDict
