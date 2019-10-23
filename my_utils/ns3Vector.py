@@ -3,4 +3,4 @@ class Ns3Vector:
         elements = textvector.split(':')
         self.x = float(elements[0])
         self.y = float(elements[1])
-        self.z = float(elements[2]) if len(elements) > 2 else 0
+        self.z = float(elements[2]) if len(elements) > 2 else 0.0
