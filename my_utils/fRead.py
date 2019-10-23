@@ -155,8 +155,6 @@ def get_csvdict (filename, restKey = None):
             break
         except FileNotFoundError:
             print(sys.exc_info()[1], '\n')
-        except:
-            print ("Error while processing record from {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]), '\n')
     #print ("done")
 
 '''
