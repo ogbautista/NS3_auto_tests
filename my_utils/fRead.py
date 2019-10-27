@@ -145,16 +145,15 @@ def get_csvdict_prompt (index = None, filenameRef = [None]):
 Reads a CSV file with headers row. The filename is passed as an argument.
 RETURNS a generator object which produces Records as an OrderedDict with header row elements as keys.'''
 def get_csvdict (filename, restKey = None):
-    while True:
-        try:
-            #print ("Opening and reading file", filename + "...", end = "")
-            with open (filename, 'r', newline='') as csvfile:
-                reader = csv.DictReader(csvfile, restkey = restKey)
-                for row in reader:
-                    yield row
-            break
-        except FileNotFoundError:
-            print(sys.exc_info()[1], '\n')
+    try:
+        #print ("Opening and reading file", filename + "...", end = "")
+        with open (filename, 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile, restkey = restKey)
+            for row in reader:
+                yield row
+    except FileNotFoundError:
+        print(sys.exc_info()[1], '\n')
+        sys.exit(1)
     #print ("done")
 
 '''
