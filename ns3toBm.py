@@ -16,7 +16,7 @@ from my_utils.ns3Time import Ns3Time
 from my_utils.ns3Vector import Ns3Vector
 
 if len(sys.argv) < 3:
-    print ("\nUsage:\npython ns3toBm.py 'waypointsfile.csv' 'bonnmotionfile.movements' [stime=...]\n")
+    print ("\nUsage:\npython3 ns3toBm.py 'waypointsfile.csv' 'bonnmotionfile.movements' [stime=...]\n")
     sys.exit(1)
 
 sourceFile = sys.argv[1]
@@ -32,11 +32,11 @@ if len(sys.argv) >= 4:
         except ValueError as e:
             print(e, "...ignored")
     else:
-        print("Invalid argument: {} ...ignored".format(sys.argv[3]))
+        print("Invalid argument: '{}' ...ignored".format(argpair[0]))
 
 # This dictionary stores the movement information for each node as a list element
 bmMovements = {}
-
+# Read and process data from the source file
 waypoints = fRead.get_csvdict(sourceFile)
 for waypoint in waypoints:
     try:
@@ -79,4 +79,3 @@ try:
     print ("Successfully created {}\n".format(bmScenarioFile))
 except:
     print("Error while writing to file {}: {}, {}".format(bmScenarioFile, sys.exc_info()[0], sys.exc_info()[1]))
-    sys.exit(1)
