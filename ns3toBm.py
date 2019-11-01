@@ -16,7 +16,10 @@ from my_utils.ns3Time import Ns3Time
 from my_utils.ns3Vector import Ns3Vector
 
 if len(sys.argv) < 3:
-    print ("\nUsage:\npython3 ns3toBm.py 'waypointsfile.csv' 'bonnmotionfile.movements' [stime=...]\n")
+    print ("\nUsage:\n python3 ns3toBm.py <source file> <output file> [stime=...]\n")
+    print (" <Source file>\t\tCourse Change csv file with information obtained from NS3 traces.")
+    print (" <Output file>\t\tName of output mobility scenario file in BonnMotion format (add .movements ext.)")
+    print ("  stime\t\t\tEspecified when duration of scenario is larger than the last course change.\n")
     sys.exit(1)
 
 sourceFile = sys.argv[1]
@@ -32,7 +35,7 @@ if len(sys.argv) >= 4:
         except ValueError as e:
             print(e, "...ignored")
     else:
-        print("Invalid argument: '{}' ...ignored".format(argpair[0]))
+        print("Invalid argument: '{}' ignored".format(argpair[0]))
 
 # This dictionary stores the movement information for each node as a list element
 bmMovements = {}
