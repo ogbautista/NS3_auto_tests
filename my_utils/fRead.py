@@ -185,7 +185,8 @@ def read_bmScenario (filename):
                 locations.append(nodeLocations)
                 line = scenario.readline()
     except FileNotFoundError:
-        print(sys.exc_info()[1])
+        print(sys.exc_info()[1], '\n')
+        sys.exit(1)
     except:
         print("Error while processing {}: {}, {}".format(filename, sys.exc_info()[0], sys.exc_info()[1]))
     return times, locations
