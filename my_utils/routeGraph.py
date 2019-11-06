@@ -32,9 +32,9 @@ class LinkType (Enum):
 
 class RouteGraph:
     _LOWER_RATES = ["DsssRate1Mbps", "DsssRate2Mbps"]
-    _MEDIUM_LOW_RATES = ["DsssRate5_5Mbps", "DsssRate11Mbps", "ErpOfdmRate6Mbps", "ErpOfdmRate9Mbps"]
-    _MEDIUM_HIGH_RATES = ["ErpOfdmRate12Mbps", "ErpOfdmRate18Mbps", "ErpOfdmRate24Mbps"]
-    _HIGHER_RATES = ["ErpOfdmRate36Mbps", "ErpOfdmRate48Mbps", "ErpOfdmRate54Mbps"]
+    _MEDIUM_LOW_RATES = ["DsssRate5_5Mbps", "DsssRate11Mbps", "OfdmRate6Mbps", "ErpOfdmRate6Mbps", "OfdmRate9Mbps", "ErpOfdmRate9Mbps"]
+    _MEDIUM_HIGH_RATES = ["OfdmRate12Mbps", "ErpOfdmRate12Mbps", "OfdmRate18Mbps", "ErpOfdmRate18Mbps", "OfdmRate24Mbps", "ErpOfdmRate24Mbps"]
+    _HIGHER_RATES = ["OfdmRate36Mbps", "ErpOfdmRate36Mbps", "OfdmRate48Mbps", "ErpOfdmRate48Mbps", "OfdmRate54Mbps", "ErpOfdmRate54Mbps"]
 
     def __init__ (self, legend, fTitle = None, dimension= '3d'):
         self._legendDict = legend
