@@ -19,7 +19,7 @@ while True:
         print ("done")
         break
     except:
-        print ("there was an error opening the specified file\n")
+        print ("error opening the specified file\n")
         filename = None
 
 content = f.readlines()
@@ -66,10 +66,12 @@ while executeMain:
         if found:
             print("Building figure...")
             # Aspect ratio width vs height: 0.3, figure scaling: 0.5
-            fig = plt.figure(figsize = plt.figaspect(0.35)*.65)
+            fig = plt.figure(figsize = plt.figaspect(0.4)*0.7)
             fig.canvas.set_window_title('Drone Deployment')
             #ax = fig.add_subplot (111, projection='3d')
             ax = fig.gca(projection='3d')
+            ax.view_init (elev= 30, azim= -70)
+            plt.subplots_adjust(left= -0.08, bottom= 0.04, right= 1.03, top= 0.9)
             ax.title.set_text( str(nNodes) + "-node topology #" + str(topoIdNum) )
             ax.scatter(X[0], Y[0], Z[0], s=15, c='r', marker='o')
             ax.scatter(X[1:], Y[1:], Z[1:], s=15, c='b', marker='o')
@@ -78,7 +80,7 @@ while executeMain:
             ax.set_zlabel('z axis')
             #ax.plot([X[0], X[1]], [Y[0], Y[1]], [Z[0], Z[1]])
             for i in range (len (X)):
-                 ax.text(X[i], Y[i], Z[i], '%s' % (str(i)), size=10, zorder=1, color='k')
+                 ax.text(X[i], Y[i], Z[i], '%s' % (str(i)), size=8, zorder=1, color='k')
             # plt.axes().set_aspect('equal', 'datalim') # This converts the figure to 2D
             plt.show()
             print("Figure for topology", str(topoIdNum), "closed.")
